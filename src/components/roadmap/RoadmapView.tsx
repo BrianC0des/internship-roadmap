@@ -86,13 +86,13 @@ export function RoadmapView({
   useEffect(() => {
     if (!rfInstance) return;
     const timer = setTimeout(() => {
-      rfInstance.fitView({ padding: 0.2, duration: 220 });
+      rfInstance.fitView({ padding: 0.08, maxZoom: 1.15, duration: 220 });
     }, 40);
     return () => clearTimeout(timer);
   }, [activeTrack, rfInstance]);
 
   const handleFitScreen = useCallback(() => {
-    rfInstance?.fitView({ padding: 0.2, duration: 250 });
+    rfInstance?.fitView({ padding: 0.08, maxZoom: 1.15, duration: 250 });
   }, [rfInstance]);
 
   const selectedNode = useMemo(
@@ -104,7 +104,7 @@ export function RoadmapView({
     <div className="flex flex-1 flex-col min-h-0">
       {/* Sub-toolbar: Track Tabs + Search + Fit */}
       <div className="border-b border-slate-200 bg-slate-50/80 px-4 py-2.5 sm:px-6 dark:border-slate-800 dark:bg-slate-900/40">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3">
+        <div className="flex w-full flex-wrap items-center justify-between gap-3">
           <div role="tablist" aria-label="Roadmap tracks" className="flex items-center gap-1 rounded-xl bg-slate-200/70 p-1 dark:bg-slate-800">
             {TRACK_TABS.map((tab) => {
               const active = activeTrack === tab.id;
@@ -167,7 +167,7 @@ export function RoadmapView({
 
       {/* Legend */}
       <div className="border-b border-slate-200 bg-white px-4 py-1.5 text-[11px] text-slate-500 sm:px-6 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-2">
+        <div className="flex w-full flex-wrap items-center justify-between gap-2">
           <span>Click any node for resources &amp; notes. Right-click to change status.</span>
           <div className="flex flex-wrap items-center gap-3">
             <span className="inline-flex items-center gap-1">
@@ -215,7 +215,7 @@ export function RoadmapView({
           }}
           onPaneClick={() => setContextMenu(null)}
           fitView
-          fitViewOptions={{ padding: 0.2 }}
+          fitViewOptions={{ padding: 0.08, maxZoom: 1.15 }}
           minZoom={0.35}
           maxZoom={1.75}
           panOnScroll
@@ -228,6 +228,7 @@ export function RoadmapView({
             pannable
             zoomable
             className="hidden sm:block"
+            maskColor="rgba(15, 23, 42, 0.45)"
             nodeColor={(n) => {
               const st = (n.data as { status?: NodeStatus })?.status;
               if (st === 'done') return '#059669';

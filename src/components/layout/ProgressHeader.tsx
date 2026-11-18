@@ -26,7 +26,7 @@ export function ProgressHeader({
       aria-label="Roadmap progress summary"
       className="border-b border-slate-200 bg-white px-4 py-3 sm:px-6 dark:border-slate-800 dark:bg-slate-900/70"
     >
-      <div className="mx-auto flex max-w-7xl flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+      <div className="flex w-full flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         {/* Overall + Section % */}
         <div className="flex flex-1 flex-col gap-2">
           <div className="flex items-center gap-3">
