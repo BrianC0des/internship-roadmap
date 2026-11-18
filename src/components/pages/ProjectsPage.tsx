@@ -164,8 +164,13 @@ export function ProjectsPage({
         </form>
       )}
 
-      <div className="mt-5 grid gap-4 md:grid-cols-2">
-        {projects.map((proj) => (
+      {projects.length === 0 ? (
+        <p className="mt-5 rounded-xl border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500 dark:border-slate-700 dark:text-slate-400">
+          No projects added yet. Click <strong>Add Project</strong> above to log your own projects.
+        </p>
+      ) : (
+        <div className="mt-5 grid gap-4 md:grid-cols-2">
+          {projects.map((proj) => (
           <article
             key={proj.id}
             className="flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900"
@@ -258,8 +263,9 @@ export function ProjectsPage({
               </button>
             </div>
           </article>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* Squad Project Showcase */}
       <section className="mt-10 border-t border-slate-200 pt-8 dark:border-slate-800">

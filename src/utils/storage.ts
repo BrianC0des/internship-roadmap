@@ -22,11 +22,16 @@ export function createDefaultState(): PersistedState {
   };
 }
 
+const SEED_PLACEHOLDER_PROJECT_IDS = new Set(['proj-go-api', 'proj-fullstack-ts']);
+
 export function loadPersistedState(): PersistedState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return createDefaultState();
     const parsed = JSON.parse(raw) as Partial<PersistedState>;
+    const projects = Array.isArray(parsed.projects)
+      ? parsed.projects.filter((p) => !SEED_PLACEHOLDER_PROJECT_IDS.has(p.id))
+      : INITIAL_PROJECTS;
     return {
       statuses: parsed.statuses ?? {},
       notes: parsed.notes ?? {},
@@ -34,7 +39,7 @@ export function loadPersistedState(): PersistedState {
       collapsedNodeIds: Array.isArray(parsed.collapsedNodeIds)
         ? parsed.collapsedNodeIds
         : [],
-      projects: Array.isArray(parsed.projects) ? parsed.projects : INITIAL_PROJECTS,
+      projects,
       companyUpdates: Array.isArray(parsed.companyUpdates)
         ? parsed.companyUpdates
         : INITIAL_COMPANY_UPDATES,
