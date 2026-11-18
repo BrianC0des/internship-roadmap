@@ -20,6 +20,16 @@ import {
   savePersistedState,
 } from '../utils/storage';
 
+const PLACEHOLDER_PROJECT_IDS = new Set(['proj-go-api', 'proj-fullstack-ts']);
+
+function stripPlaceholderProjects(state: PersistedState): { cleaned: PersistedState; changed: boolean } {
+  const filtered = (state.projects ?? []).filter((p) => !PLACEHOLDER_PROJECT_IDS.has(p.id));
+  if (filtered.length === (state.projects ?? []).length) {
+    return { cleaned: state, changed: false };
+  }
+  return { cleaned: { ...state, projects: filtered }, changed: true };
+}
+
 export function useRoadmapState() {
   const [state, setState] = useState<PersistedState>(() => loadPersistedState());
   const [user, setUser] = useState<AuthUser | null>(() => getStoredUser());
@@ -38,8 +48,9 @@ export function useRoadmapState() {
     fetchCloudState()
       .then((res) => {
         if (res.state) {
-          skipNextCloudPush.current = true;
-          setState(res.state);
+          const { cleaned, changed } = stripPlaceholderProjects(res.state);
+          skipNextCloudPush.current = !changed;
+          setState(cleaned);
         }
         setSyncStatus('synced');
       })

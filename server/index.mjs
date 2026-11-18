@@ -67,6 +67,34 @@ async function initStorage() {
         );
       }
     }
+    // One-time cleanup: remove old seeded placeholder projects if present
+    const allUsers = await pool.query(
+      'SELECT username, state_json, points_json FROM roadmap_users WHERE state_json IS NOT NULL'
+    );
+    for (const row of allUsers.rows) {
+      const projects = Array.isArray(row.state_json?.projects) ? row.state_json.projects : [];
+      const filtered = projects.filter((p) => p.id !== 'proj-go-api' && p.id !== 'proj-fullstack-ts');
+      if (filtered.length !== projects.length) {
+        const nextState = { ...row.state_json, projects: filtered };
+        const removedPts = projects
+          .filter((p) => p.id === 'proj-go-api' || p.id === 'proj-fullstack-ts')
+          .reduce((sum, p) => sum + (p.status === 'completed' ? 150 : p.status === 'in_progress' ? 50 : 0), 0);
+        const nextPoints = {
+          ...(row.points_json ?? EMPTY_POINTS),
+          projectPoints: Math.max(0, (row.points_json?.projectPoints ?? 0) - removedPts),
+          totalPoints: Math.max(0, (row.points_json?.totalPoints ?? 0) - removedPts),
+          completedProjectsCount: Math.max(
+            0,
+            (row.points_json?.completedProjectsCount ?? 0) -
+              projects.filter((p) => (p.id === 'proj-go-api' || p.id === 'proj-fullstack-ts') && p.status === 'completed').length
+          ),
+        };
+        await pool.query(
+          'UPDATE roadmap_users SET state_json = $2::jsonb, points_json = $3::jsonb WHERE username = $1',
+          [row.username, JSON.stringify(nextState), JSON.stringify(nextPoints)]
+        );
+      }
+    }
     return;
   }
 
