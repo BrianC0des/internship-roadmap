@@ -1,0 +1,24 @@
+{
+  "lastCheckedAt": "2026-11-18T02:41:54.593Z",
+  "hennge": {
+    "sourceUrl": "https://hennge.com/global/gip/",
+    "ok": true,
+    "statusLabel": "Open / Rolling",
+    "highlights": [],
+    "note": "Fetched HENNGE GIP page; verify specific batch slots on portal."
+  },
+  "mercari": {
+    "sourceUrl": "https://careers.mercari.com/",
+    "ok": true,
+    "statusLabel": "14 Intern/Grad Posting(s)",
+    "highlights": [
+      "28卒対象 / セキュリティエンジニア インターンシップ- Mercari Group (Minato City)",
+      "28卒対象 / セキュリティエンジニア 新卒採用 - Mercari Group (Minato City)",
+      "28卒対象 /Research Scientist, ELSI (Ethical, Legal, and Social Issues) - Mercari (Minato City)",
+      "Build Internship Plus, Software Engineer (Internship) - Mercari (Minato City)",
+      "Class of 2028 / New graduate Security Engineer - Mercari Group (Minato City)",
+      "Class of 2028 / Security Engineer Internship- Mercari Group (Minato City)"
+    ],
+    "note": "Live postings pulled from Mercari Workable feed."
+  }
+}
