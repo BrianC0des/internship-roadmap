@@ -203,6 +203,43 @@ async function getLeaderboard() {
     }));
 }
 
+async function getSquadShowcase() {
+  let rows = [];
+  if (pool) {
+    const res = await pool.query(
+      'SELECT username, display_name, state_json, updated_at FROM roadmap_users'
+    );
+    rows = res.rows.map((r) => ({
+      username: r.username,
+      displayName: r.display_name,
+      projects: Array.isArray(r.state_json?.projects) ? r.state_json.projects : [],
+      updatedAt: r.updated_at,
+    }));
+  } else {
+    const db = readFileDb();
+    rows = Object.values(db.users).map((u) => ({
+      username: u.username,
+      displayName: u.displayName,
+      projects: Array.isArray(u.state?.projects) ? u.state.projects : [],
+      updatedAt: u.updatedAt,
+    }));
+  }
+
+  const showcase = [];
+  for (const row of rows) {
+    for (const proj of row.projects) {
+      if (proj && (proj.status === 'completed' || proj.status === 'in_progress')) {
+        showcase.push({
+          ...proj,
+          ownerUsername: row.username,
+          ownerDisplayName: row.displayName,
+        });
+      }
+    }
+  }
+  return showcase;
+}
+
 // ---------------------------------------------------------------------------
 // Express App
 // ---------------------------------------------------------------------------
@@ -282,6 +319,11 @@ app.put('/api/state', requireAuth, async (req, res) => {
 app.get('/api/leaderboard', async (_req, res) => {
   const entries = await getLeaderboard();
   res.json({ entries });
+});
+
+app.get('/api/showcase', async (_req, res) => {
+  const projects = await getSquadShowcase();
+  res.json({ projects });
 });
 
 initStorage()

@@ -1,4 +1,4 @@
-import { PersistedState } from '../types/roadmap';
+import { PersistedState, ProjectItem } from '../types/roadmap';
 import { PointsBreakdown } from './points';
 
 const TOKEN_KEY = 'japan-internship-roadmap:token';
@@ -124,4 +124,14 @@ export async function saveCloudState(
 export async function fetchLeaderboard(): Promise<LeaderboardEntry[]> {
   const res = await apiFetch<{ entries: LeaderboardEntry[] }>('/api/leaderboard');
   return res.entries;
+}
+
+export interface ShowcaseProject extends ProjectItem {
+  ownerUsername: string;
+  ownerDisplayName: string;
+}
+
+export async function fetchSquadShowcase(): Promise<ShowcaseProject[]> {
+  const res = await apiFetch<{ projects: ShowcaseProject[] }>('/api/showcase');
+  return res.projects;
 }
